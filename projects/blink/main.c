@@ -1,4 +1,4 @@
-#include <si_efm8ub1_defs.h>
+#include <SI_EFM8UB1_Register_Enums.h>
 #include <stdint.h>
 
 int main()
