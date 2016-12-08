@@ -1,7 +1,10 @@
 /******************************************************************************
  * Copyright (c) 2014 by Silicon Laboratories Inc. All rights reserved.
  *
- * LICENSE_PLACEHOLDER
+ * http://developer.silabs.com/legal/version/v11/Silicon_Labs_Software_License_Agreement.txt
+ *
+ * Ported to SDCC by Aaron Perl
+ *
  *****************************************************************************/
 
 #ifndef __SI_TOOLCHAIN_H__
@@ -96,6 +99,13 @@
 
 /// Declares a variable to be located in 8051 CODE space.
 #define SI_SEG_CODE __code
+
+/**************************************************************************//**
+ * Declares a bit variable in a bit-addressable memory space.
+ *
+ * @param name The name of the bit variable.
+ *****************************************************************************/
+#define SI_BIT(name) __bit name
 
 /**************************************************************************//**
  * Declares a bit variable in a bit-addressable SFR or memory space.
@@ -214,12 +224,65 @@
 #define SI_INTERRUPT_PROTO_USING(name, vector, regnum) void name (void)
 
 /**************************************************************************//**
+ * Define a function to be reentrant (store local variables on the stack).
+ *
+ * @param name The name of the function.
+ * @param return_type The data type of the function return value
+ * (void, int, etc).
+ * @param parameter One C function parameter (or "void") (type and name).
+ *
+ * This macro defines a function to be reentrant.
+ *
+ * You must specify the _return_type_ which is the type of the function.  It
+ * can be `void` or any other C type or typedef.  The _parameters_ argument
+ * is the list of function parameters.  It can be `void` or else it must be
+ * a parameter data type and name.  It can also be multiple parameters but
+ * they must be enclosed in parentheses and separated by commas.
+ *
+ * __Example__
+ *
+ * ~~~~~~~~.c
+ * // The following is used to implement a function with the following
+ * // signature...
+ * uint16_t myFunction(uint8_t parm1, uint8_t parm2);
+ *
+ * SI_REENTRANT_FUNCTION(myFunction, uint16_t, (uint8_t parm1, uint8_t parm2))
+ * {
+ *   // Function implementation body
+ * }
+ * ~~~~~~~~
+ *
+ * @note This macro is used to define the function implementation.  To declare
+ * the function prototype, use @ref SI_REENTRANT_FUNCTION_PROTO.
+ *****************************************************************************/
+#define SI_REENTRANT_FUNCTION(name, return_type, parameter) \
+  return_type name (parameter) __reentrant
+
+/**************************************************************************//**
+ * Declare a function to be reentrant (store local variables on the stack).
+ *
+ * @param name The name of the function.
+ * @param return_type The data type of the function return value
+ * (void, int, etc).
+ * @param parameter One C function parameter (or "void") (type and name).
+ *
+ * This macro declares a function prototype for a C function that is reentrant.
+ * See the documentation for @ref SI_REENTRANT_FUNCTION for an explanation of
+ * the macro arguments.  This is an advanced feature.
+ *
+ * @note This macro is used to declare a prototype for the function.  To
+ * define the function implementation, use @ref SI_REENTRANT_FUNCTION.
+ *****************************************************************************/
+#define SI_REENTRANT_FUNCTION_PROTO(name, return_type, parameter) \
+  return_type name (parameter) __reentrant
+               
+/**************************************************************************//**
  * Define a function to use a specific register bank.
  *
  * @param name The name of the function.
- * @param returnType The data type of the function return value
+ * @param return_value The data type of the function return value
  * (void, int, etc).
- * @param parameters One or more C function parameters (type and name).
+ * @param parameter One C function parameter (or "void") (type and name).
  * @param regnum The register bank number (0-3).
  *
  * This macro defines a function that uses a specific register bank.  The
@@ -230,7 +293,7 @@
  * function.  However, this is an advanced feature and you should not use it
  * unless you fully understand how and when to use register banking.
  *
- * You must specify the _returnType_ which is the type of the function.  It
+ * You must specify the _return_value_ which is the type of the function.  It
  * can be `void` or any other C type or typedef.  The _parameters_ argument
  * is the list of function parameters.  It can be `void` or else it must be
  * a parameter data type and name.  It can also be multiple parameters but
@@ -252,16 +315,16 @@
  * @note This macro is used to define the function implementation.  To declare
  * the function prototype, use @ref SI_FUNCTION_PROTO_USING.
  *****************************************************************************/
-#define SI_FUNCTION_USING(name, returnType, parameters, regnum)              \
+#define SI_FUNCTION_USING(name, return_value, parameter, regnum)              \
              return_value name (parameter) __using (regnum)
 
 /**************************************************************************//**
  * Declare a function that uses a specific register bank.
  *
  * @param name The name of the function.
- * @param returnType The data type of the function return value
+ * @param return_value The data type of the function return value
  * (void, int, etc).
- * @param parameters One or more C function parameters (type and name).
+ * @param parameter One C function parameter (or "void") (type and name).
  * @param regnum The register bank number (0-3).
  *
  * This macro declares a function prototype for a C function that uses a
@@ -272,15 +335,14 @@
  * @note This macro is used to declare a prototype for the function.  To
  * define the function implementation, use @ref SI_FUNCTION_USING.
  *****************************************************************************/
-#define SI_FUNCTION_PROTO_USING(name, returnType, parameters, regnum)        \
+#define SI_FUNCTION_PROTO_USING(name, return_value, parameter, regnum)        \
              return_value name (parameter)
 
 /**************************************************************************//**
  * Declare a variable to be located in a specific memory segment.
  *
  * @param name The variable name.
- * @param vartype The variable data type.
- * @param memseg The memory segment to use for the variable.
+ * @param vartype The variable data type.* @param memseg The memory segment to use for the variable.
  *
  * This macro declares a variable to be located in a specific memory area
  * (or segment) of the 8051 memory space.  It is only necessary to use this
@@ -444,6 +506,9 @@
 #define SI_INTERRUPT_PROTO(name, vector) void name (void)
 #define SI_INTERRUPT_PROTO_USING(name, vector, regnum) void name (void)
 
+#define SI_REENTRANT_FUNCTION(name, return_value, parameter, regnum) return_value name (parameter)
+#define SI_REENTRANT_FUNCTION_PROTO(name, return_value, parameter, regnum) return_value name (parameter)
+
 #define SI_FUNCTION_USING(name, return_value, parameter, regnum) return_value name (parameter)
 #define SI_FUNCTION_PROTO_USING(name, return_value, parameter, regnum) return_value name (parameter)
 // Note: Parameter must be either 'void' or include a variable type and name. (Ex: char temp_variable)
@@ -514,10 +579,10 @@ typedef union SI_GEN_PTR
   GPTR_t gptr;      ///< 3-byte generic pointer as pointer structure
 } SI_GEN_PTR_t;
 
-// Declaration of Keil intrinisc
-extern void _nop_(void);
 /// Macro to insert a no-operation (NOP) instruction.
-#define NOP() _nop_()
+#define NOP() __asm \
+              nop \
+			  __endasm
 
 #else // unknown toolchain
 #error Unrecognized toolchain in si_toolchain.h
