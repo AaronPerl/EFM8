@@ -1,0 +1,12 @@
+# Intel Hex files
+*.ihx
+
+# Compiler generated files
+*.lk
+*.map
+*.mem
+*.asm
+*.lst
+*.rel
+*.rst
+*.sym
