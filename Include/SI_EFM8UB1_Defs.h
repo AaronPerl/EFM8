@@ -7,10 +7,11 @@
 // Original content and implementation provided by Silicon Laboratories.
 //------------------------------------------------------------------------------
 //Supported Devices:
-//  EFM8UB10F16G
-//  EFM8UB10F16G
-//  EFM8UB10F8G
-//  EFM8UB11F16G
+//  EFM8UB10F16G_QFN20
+//  EFM8UB10F16G_QFN28
+//  EFM8UB10F8G_QFN20
+//  EFM8UB11F16G_QFN24
+//  EFM8UB11F16G_QSOP24
 
 #ifndef SI_EFM8UB1_DEFS_H
 #define SI_EFM8UB1_DEFS_H
@@ -145,10 +146,10 @@ SI_SFR (SMB0ADR,   0xD7); ///< SMBus 0 Slave Address
 SI_SFR (SMB0CF,    0xC1); ///< SMBus 0 Configuration                  
 SI_SFR (SMB0CN0,   0xC0); ///< SMBus 0 Control                        
 SI_SFR (SMB0DAT,   0xC2); ///< SMBus 0 Data                           
-SI_SFR (SMB0FCN0,  0xC3); ///< SMBus0 FIFO Control 0                  
-SI_SFR (SMB0FCN1,  0xC4); ///< SMBus0 FIFO Control 1                  
-SI_SFR (SMB0FCT,   0xEF); ///< SMBus0 FIFO Count                      
-SI_SFR (SMB0RXLN,  0xC5); ///< SMBus0 Receive Length Counter          
+SI_SFR (SMB0FCN0,  0xC3); ///< SMBus 0 FIFO Control 0                 
+SI_SFR (SMB0FCN1,  0xC4); ///< SMBus 0 FIFO Control 1                 
+SI_SFR (SMB0FCT,   0xEF); ///< SMBus 0 FIFO Count                     
+SI_SFR (SMB0RXLN,  0xC5); ///< SMBus 0 Receive Length Counter         
 SI_SFR (SMB0TC,    0xAC); ///< SMBus 0 Timing and Pin Control         
 SI_SFR (SMOD1,     0x93); ///< UART1 Mode                             
 SI_SFR (SP,        0x81); ///< Stack Pointer                          
@@ -456,7 +457,7 @@ SI_SBIT (UART1FCN1_TFRQ,   SFR_UART1FCN1, 7); ///< Transmit FIFO Request
 #define UART0_IRQn   4  ///< UART0                     
 #define TIMER2_IRQn  5  ///< Timer 2 Overflow / Capture
 #define SPI0_IRQn    6  ///< SPI0                      
-#define SMBUS0_IRQn  7  ///< SMBus0                    
+#define SMBUS0_IRQn  7  ///< SMBus 0                   
 #define PMATCH_IRQn  8  ///< Port Match                
 #define ADC0WC_IRQn  9  ///< ADC0 Window Compare       
 #define ADC0EOC_IRQn 10 ///< ADC0 End of Conversion    
